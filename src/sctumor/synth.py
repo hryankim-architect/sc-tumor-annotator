@@ -253,9 +253,9 @@ def generate_malignancy_cohort(
 ) -> SyntheticCohort:
     """Hard regime: malignant vs normal epithelial differ ONLY by subclonal CNV.
 
-    This cohort is built to make the central claim *measurable*: that an
-    expression-derived CNV signal sharpens the normal-vs-malignant call beyond
-    what a transcriptomic embedding alone can do.
+    This cohort is built so the CNV channel's contribution to the
+    normal-vs-malignant call can be *measured* rather than assumed (see
+    :mod:`sctumor.ablation`).
 
     The trick is **intratumor heterogeneity**. Each malignant cell independently
     picks a small random subset of chromosomes to alter, each with a random sign

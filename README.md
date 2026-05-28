@@ -8,10 +8,11 @@
 
 **What this shows**: a tree-based, *trainable* hierarchical annotator for cancer
 single-cell RNA-seq that (1) labels cell types, (2) calls malignant vs normal
-epithelial cells with help from an expression-derived **copy-number-variation
-(CNV) score**, and (3) predicts cancer **subtype** (ER+/HER2+/TNBC) and **grade**
-(1/2/3) within malignant cells — evaluated under both 5-fold cross-validation and
-an independent-cohort hold-out, head-to-head against a reference-mapping baseline.
+epithelial cells, optionally informed by an expression-derived
+**copy-number-variation (CNV) score**, and (3) predicts cancer **subtype**
+(ER+/HER2+/TNBC) and **grade** (1/2/3) within malignant cells — evaluated under
+5-fold cross-validation and an independent-cohort hold-out, with the CNV score's
+contribution measured by an explicit ablation rather than assumed.
 
 **Reproducibility**: `make run` produces the metrics artifact in < 1 minute on a
 single Mac/Linux box. Everything is seeded.
@@ -51,9 +52,10 @@ company's model, dataset, or parameters. See
               4. subtype+grade : ER+/HER2+/TNBC ; grade 1/2/3
 ```
 
-The CNV score is the integration point: an expression-derived copy-number
-signal fed in as an explicit feature for the normal-vs-malignant decision,
-alongside the transcriptomic embedding.
+The CNV score is offered as one optional, interpretable feature for the
+normal-vs-malignant decision, alongside the transcriptomic embedding. Whether it
+improves the call over the embedding alone is treated as an empirical question,
+answered by the v0.2 ablation below — not asserted.
 
 ---
 

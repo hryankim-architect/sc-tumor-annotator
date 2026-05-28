@@ -33,15 +33,19 @@ couple of minutes.
 | `annotate.py` | Four-stage tree-based hierarchical classifier (gradient-boosted trees) + a kNN reference-mapping baseline. The CNV score is an explicit input feature for the malignant call. |
 | `evaluate.py` | 5-fold stratified CV and independent-cohort hold-out, each scoring tree vs baseline with macro-F1 on cell type, malignant call, subtype, and grade. |
 
-## Why CNV inference belongs in the annotator
+## Why a CNV channel is offered to the annotator
 
 Short-read scRNA-seq does not read copy number directly, but large chromosomal
 gains and losses shift the *average* expression of long runs of neighbouring
 genes. Ordering genes genomically and smoothing recovers a per-cell
-pseudo-copy-number track (the public idea behind InferCNV and CopyKat). Feeding
-the aggregate CNV score into the normal-vs-malignant classifier gives the model
-a signal that pure transcriptomic clustering can blur, especially where normal
-and malignant epithelial cells share lineage markers.
+pseudo-copy-number track (the public idea behind InferCNV and CopyKat). The
+aggregate CNV score is offered to the normal-vs-malignant classifier as one
+interpretable feature. Whether it improves the call over the transcriptomic
+embedding alone is an empirical question the ablation answers — and the honest
+answer on the synthetic regime is modest: a single CNV scalar approaches a
+30-PC embedding (0.94 vs 0.99 macro-F1) and adding it to the embedding is only
+marginally additive. The score's value is interpretability and compactness, not
+a large accuracy gain.
 
 ## Why length-normalize the CNV score
 

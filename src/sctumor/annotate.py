@@ -11,13 +11,13 @@ down a label:
                             (CNV score is an input feature here)
     4. subtype + grade    : within malignant, ER+/HER2+/TNBC and grade 1/2/3
 
-Each stage is an independent gradient-boosted tree classifier. The CNV score
-from :mod:`sctumor.cnv` is appended as an extra feature for the malignant call,
-which is the integration point the POC is built to show: expression-derived
-copy-number signal sharpening the normal-vs-malignant boundary.
+Each stage is an independent gradient-boosted tree classifier. For the malignant
+call the CNV score from :mod:`sctumor.cnv` is available as an optional extra
+feature; the ablation in :mod:`sctumor.ablation` measures what it actually
+contributes rather than assuming it helps.
 
 A k-nearest-neighbour reference-mapping baseline is included for comparison so
-the evaluation harness can report a head-to-head F1, the way the source-domain
+the evaluation harness can report a head-to-head F1, the way the single-cell
 literature compares trainable models against Scanpy-ingest-style baselines.
 """
 
@@ -141,8 +141,9 @@ class ReferenceMappingBaseline:
 
     This stands in for anchor-based / ingest-style label transfer: embed with
     PCA, then assign each query cell the majority label of its nearest training
-    neighbours. It does not use the CNV score, which is precisely why the
-    tree-based model is expected to win on the malignant call.
+    neighbours. It does not use the CNV score; it is the CNV-blind reference
+    point the evaluation harness compares against, with no assumption about
+    which method comes out ahead.
     """
 
     n_pca: int = 30
