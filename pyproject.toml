@@ -1,0 +1,59 @@
+[project]
+name = "sctumor"
+version = "0.1.0"
+description = "Capability-portrait POC: tree-based hierarchical annotation, CNV inference, and subtype/grade prediction for cancer scRNA-seq."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "H. Ryan Kim" },
+]
+requires-python = ">=3.11"
+
+dependencies = [
+    "click>=8.1.7",
+    "numpy>=1.26.0",
+    "pandas>=2.1.0",
+    "scipy>=1.11.0",
+    "scikit-learn>=1.4.0",
+    "pyyaml>=6.0.1",
+    "mlflow>=2.11.0",
+    "ipykernel>=6.29.0",
+    "nbconvert>=7.16.0",
+    "jupyter>=1.0.0",
+]
+
+[project.optional-dependencies]
+# The canonical single-cell stack the method targets on real data. The demo
+# itself runs without these (it uses synthetic arrays), but a user pointing the
+# pipeline at real public datasets would install them.
+singlecell = [
+    "anndata>=0.10.0",
+    "scanpy>=1.10.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+sctumor = "sctumor.pipeline:cli"
+
+[build-system]
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sctumor"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
