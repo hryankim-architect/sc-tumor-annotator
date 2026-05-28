@@ -1,0 +1,5 @@
+{
+  "name": "sctumor-default",
+  "tier": "tier-1",
+  "min_cnv_separation": 0.05
+}

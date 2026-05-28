@@ -1,0 +1,71 @@
+# Public-data manifest.
+#
+# The demo in this repository runs on SYNTHETIC data generated deterministically
+# by `sctumor.synth` -- no download is required and `make run` needs no network.
+#
+# This manifest instead documents the public, peer-reviewed datasets that this
+# class of method is designed to operate on, so a user can point the pipeline at
+# real single-cell cohorts. All entries are open-access primary publications;
+# none are required to reproduce the demo.
+#
+# Schema:
+#   datasets:
+#     - name:     short id
+#       modality: scRNA-seq
+#       tissue:   ...
+#       doi:      ...
+#       use:      training | independent-test | cnv-reference
+#       license:  per-publication / repository terms
+
+datasets:
+  - name: breast-atlas-a
+    modality: scRNA-seq
+    tissue: breast cancer
+    doi: 10.1038/s41588-021-00911-1
+    use: training
+    license: per-publication open access
+    note: "Single-cell and spatially resolved atlas of human breast cancers."
+
+  - name: breast-atlas-b
+    modality: scRNA-seq
+    tissue: breast (normal / preneoplastic / tumor)
+    doi: 10.15252/embj.2020107333
+    use: training
+    license: per-publication open access
+    note: "Single-cell expression atlas of normal, preneoplastic, tumorigenic breast."
+
+  - name: breast-atlas-c
+    modality: scRNA-seq
+    tissue: healthy breast
+    doi: 10.1016/j.xcrm.2021.100219
+    use: training
+    license: per-publication open access
+    note: "Single-cell atlas of healthy breast tissues."
+
+  - name: breast-independent
+    modality: scRNA-seq
+    tissue: breast cancer lymph node metastasis
+    doi: 10.1038/s41389-021-00355-6
+    use: independent-test
+    license: per-publication open access
+    note: "Independent breast-cancer cohort for cross-cohort generalization."
+
+  - name: pdac-peng
+    modality: scRNA-seq
+    tissue: pancreatic ductal adenocarcinoma
+    doi: 10.1038/s41422-019-0195-y
+    use: cnv-reference
+    license: per-publication open access
+    note: "PDAC cohort used to contrast tumor vs normal epithelial CNV scores."
+
+  - name: pdac-werba
+    modality: scRNA-seq
+    tissue: pancreatic ductal adenocarcinoma
+    doi: 10.1038/s41467-023-36296-4
+    use: cnv-reference
+    license: per-publication open access
+    note: "PDAC cohort with cancer-stage annotation for CNV-by-stage contrast."
+
+# CNV-inference method references (public, implemented from scratch here):
+#   InferCNV  -- Tickle et al., Broad Institute (github.com/broadinstitute/inferCNV)
+#   CopyKat   -- Gao et al., Nat Biotechnol 2021, doi:10.1038/s41587-020-00795-2

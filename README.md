@@ -1,0 +1,158 @@
+# `sc-tumor-annotator`
+
+> **Capability portrait, not a research result.** Public data is intentionally
+> replaced with a small, deterministically-generated synthetic cohort so the
+> demo is byte-reproducible on a single workstation in well under a minute. No
+> patient data, and no proprietary code or parameters, are present in this
+> repository.
+
+**What this shows**: a tree-based, *trainable* hierarchical annotator for cancer
+single-cell RNA-seq that (1) labels cell types, (2) calls malignant vs normal
+epithelial cells with help from an expression-derived **copy-number-variation
+(CNV) score**, and (3) predicts cancer **subtype** (ER+/HER2+/TNBC) and **grade**
+(1/2/3) within malignant cells — evaluated under both 5-fold cross-validation and
+an independent-cohort hold-out, head-to-head against a reference-mapping baseline.
+
+**Reproducibility**: `make run` produces the metrics artifact in < 1 minute on a
+single Mac/Linux box. Everything is seeded.
+
+**Substrate**: emits a hash-chained NDJSON audit ledger, tracks MLflow runs
+(no-op when no server is configured), and exposes a deterministic canary the
+lab monitoring layer probes daily.
+
+**Production framing**: methods in this *class* — automated tumor-cell
+annotation, expression-based CNV inference, and subtype/grade prediction — are
+applied at full cohort scale on proprietary data in industry settings. This
+repository implements the **method and the engineering** from public building
+blocks only (Scanpy, InferCNV, CopyKat, scikit-learn), on synthetic data. It is
+a clean-room capability demonstration, not a reproduction of any specific
+company's model, dataset, or parameters. See
+[`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
+
+---
+
+## The capability, in one diagram
+
+```
+ scRNA-seq expression (synthetic, genome-ordered genes)
+        │
+        ├── CNV inference (InferCNV / CopyKat-style)
+        │     genome-ordered expression, centered on a stromal
+        │     reference, smoothed in a sliding window
+        │        │
+        │        └── chromosome-LENGTH-NORMALIZED CNV score
+        │              (equal weight per chromosome; long
+        │               chromosomes do not dominate)
+        │
+        └── tree-based hierarchical annotator
+              1. compartment   : stromal vs epithelial
+              2. stromal type  : T / B / Myeloid / Fibroblast / Endothelial
+              3. malignant call: normal vs malignant   ← CNV score is a feature
+              4. subtype+grade : ER+/HER2+/TNBC ; grade 1/2/3
+```
+
+The CNV score is the integration point: an expression-derived copy-number
+signal fed in as an explicit feature for the normal-vs-malignant decision,
+alongside the transcriptomic embedding.
+
+---
+
+## Demo results (synthetic data, seed 0)
+
+Run on a 3-patient synthetic cohort (2,100 cells, 440 genes across 8
+chromosomes). Macro-F1, tree-based model vs reference-mapping baseline:
+
+| Axis | 5-fold CV (tree) | Independent cohort (tree) | Independent (baseline) |
+|---|---|---|---|
+| Cell type | 0.998 | 0.998 | 1.000 |
+| Malignant call | 1.000 | 1.000 | 1.000 |
+| Cancer subtype | 1.000 | 1.000 | 1.000 |
+| Cancer grade | **0.938** | **0.910** | 0.874 |
+
+Honest reading: the synthetic data is deliberately *separable*, so both methods
+recover cell type, the malignant call, and subtype near-perfectly. The
+trainable tree model's margin shows on the hardest axis — **cancer grade**,
+driven by a subtle proliferation program — where it beats the CNV-blind
+reference-mapping baseline on both CV and the independent cohort. The CNV
+score's own discriminative power is verified separately: malignant cells carry
+a markedly higher chromosome-length-normalized score than normal cells (the
+canary asserts a positive separation; the demo cohort shows ~0.23).
+
+These numbers describe *this synthetic dataset*. They are an illustration of the
+method working end-to-end, not a benchmark claim about real cohorts.
+
+---
+
+## Quickstart
+
+```bash
+# 1. install (uv preferred; falls back to pip -e .)
+make install
+
+# 2. run the end-to-end pipeline -> artifacts/demo.json
+make run
+
+# 3. tests
+make test
+
+# 4. lint + canary
+make lint
+make canary
+```
+
+`make run` needs no network and no GPU. The pipeline generates its own data.
+
+---
+
+## Layout
+
+```
+.
+├── README.md
+├── LICENSE                      # MIT
+├── Makefile                     # install | data | run | test | report | lint | canary
+├── pyproject.toml               # pinned deps; [singlecell] extra = scanpy/anndata
+├── .github/workflows/
+│   ├── ci.yml                   # ruff + pytest + scope-preamble lint + canary
+│   └── english-only.yml         # CJK scanner (public artifacts are English-only)
+├── data/
+│   ├── .gitignore
+│   └── manifest.yaml            # public datasets the method targets (not downloaded)
+├── src/sctumor/
+│   ├── synth.py                 # deterministic synthetic cancer scRNA-seq
+│   ├── cnv.py                   # expression-based CNV inference + length-normalized score
+│   ├── annotate.py              # tree-based hierarchical annotator + kNN baseline
+│   ├── evaluate.py              # 5-fold CV + independent-cohort harness
+│   ├── pipeline.py              # CLI entry; audit + MLflow shape
+│   ├── audit.py                 # hash-chained NDJSON ledger (substrate)
+│   ├── tracking.py              # MLflow wrapper (substrate)
+│   └── canary.py                # deterministic smoke test (substrate)
+├── tests/                       # synth / cnv / annotate / pipeline / canary
+└── docs/
+    ├── architecture.md
+    ├── what-is-out-of-scope.md
+    └── release-notes/v0.1.md
+```
+
+---
+
+## On real data
+
+The demo is synthetic, but the code is written against a real-data shape. The
+public datasets this class of method is designed for are catalogued in
+[`data/manifest.yaml`](data/manifest.yaml) (breast-cancer single-cell atlases
+and PDAC cohorts from the peer-reviewed literature). To adapt:
+
+1. Load a real cohort into a cells × genes matrix with a gene→chromosome map
+   (Scanpy / AnnData; install with `pip install -e ".[singlecell]"`).
+2. Use a confidently-normal population (e.g. immune/stromal cells) as the CNV
+   reference in `cnv.infer_cnv`.
+3. Train `HierarchicalAnnotator` on labeled cells; evaluate with
+   `evaluate.cross_validate` / `evaluate.independent_cohort`.
+
+The CNV-inference idea is the public method of InferCNV (Tickle et al.) and
+CopyKat (Gao et al., 2021); this repository implements it from scratch.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).
