@@ -59,6 +59,10 @@ normal-vs-malignant decision, alongside the transcriptomic embedding. Whether it
 improves the call over the embedding alone is treated as an empirical question,
 answered by the v0.2 ablation below — not asserted.
 
+![Inferred CNV track: malignant epithelial cells show genome-coherent gains and losses; normal cells do not](docs/figures/cnv_heatmap.png)
+
+*Inferred CNV track on the hard regime — epithelial cells sorted normal → malignant. The malignant block (lower rows) carries genome-coherent gains/losses; normal cells are flat noise.*
+
 ---
 
 ## Demo results (synthetic data, seed 0)
@@ -108,6 +112,8 @@ from the embedding nonlinearly, so the explicit CNV score's value is
 **interpretability and compactness**, not a large accuracy jump. The kNN
 baseline trails because the sign-heterogeneous alterations leave no single
 linear axis to map along. See [`docs/release-notes/v0.2.md`](docs/release-notes/v0.2.md).
+
+![CNV-feature ablation: kNN 0.921, CNV scalar only 0.943, 30-PC embedding 0.986, embedding+CNV 0.990](docs/figures/cnv_ablation.png)
 
 ---
 
@@ -181,7 +187,9 @@ and PDAC cohorts from the peer-reviewed literature). To adapt:
    `evaluate.cross_validate` / `evaluate.independent_cohort`.
 
 The CNV-inference idea is the public method of InferCNV (Tickle et al.) and
-CopyKat (Gao et al., 2021); this repository implements it from scratch.
+CopyKat (Gao et al., 2021); this repository implements it from scratch. A
+concrete plan to ship one real-data demo is in
+[`docs/roadmap-v0.3.md`](docs/roadmap-v0.3.md).
 
 ## License
 
