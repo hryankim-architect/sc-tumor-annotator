@@ -1,5 +1,7 @@
 # `sc-tumor-annotator`
 
+![ci](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/english-only.yml/badge.svg)
+
 > **Capability portrait, not a research result.** Public data is intentionally
 > replaced with a small, deterministically-generated synthetic cohort so the
 > demo is byte-reproducible on a single workstation in well under a minute. No
