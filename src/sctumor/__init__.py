@@ -12,4 +12,4 @@ This package ships only synthetic, deterministically-generated data. See the
 README's honest-scope preamble and ``docs/what-is-out-of-scope.md``.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

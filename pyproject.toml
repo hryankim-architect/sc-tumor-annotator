@@ -1,6 +1,6 @@
 [project]
 name = "sctumor"
-version = "0.1.0"
+version = "0.2.0"
 description = "Capability-portrait POC: tree-based hierarchical annotation, CNV inference, and subtype/grade prediction for cancer scRNA-seq."
 readme = "README.md"
 license = { text = "MIT" }
@@ -34,6 +34,7 @@ dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
     "ruff>=0.4.0",
+    "matplotlib>=3.8.0",
 ]
 
 [project.scripts]

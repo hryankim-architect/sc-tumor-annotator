@@ -20,8 +20,8 @@ from typing import Any
 
 import click
 
-from sctumor import audit, evaluate, tracking
-from sctumor.synth import generate_multipatient
+from sctumor import ablation, audit, evaluate, tracking
+from sctumor.synth import generate_malignancy_cohort, generate_multipatient
 
 
 def _run_id(name: str) -> str:
@@ -64,11 +64,19 @@ def run_pipeline(
             cohort, train_patients=patients[:-1], test_patients=patients[-1:]
         )
 
+        # v0.2 headline: CNV-feature ablation on a hard subclonal-CNV cohort
+        hard = generate_malignancy_cohort(n_patients * cells_per_patient, seed=seed)
+        abl = ablation.cnv_ablation(hard, n_splits=n_splits)
+
         # headline metrics to MLflow / artifact
         for k, v in cv["summary"].items():
             metrics[f"cv_{k}_mean"] = v["mean"]
         for k, v in indep.items():
             metrics[f"indep_{k}"] = v
+        metrics["ablation_embedding_f1"] = abl["embedding_f1_mean"]
+        metrics["ablation_cnv_only_f1"] = abl["cnv_only_f1_mean"]
+        metrics["ablation_embedding_plus_cnv_f1"] = abl["embedding_plus_cnv_f1_mean"]
+        metrics["ablation_cnv_additive_lift"] = abl["cnv_additive_lift"]
         tracking.log_metrics({k: float(v) for k, v in metrics.items()})
 
     artifact = {
@@ -78,6 +86,7 @@ def run_pipeline(
         "n_genes": int(cohort.n_genes),
         "cross_validation": cv,
         "independent_cohort": indep,
+        "cnv_ablation": abl,
     }
     artifact_path = out_dir / f"{run_name}.json"
     with artifact_path.open("w", encoding="utf-8") as fh:

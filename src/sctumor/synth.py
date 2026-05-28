@@ -241,6 +241,113 @@ def generate_cohort(
     )
 
 
+def generate_malignancy_cohort(
+    n_cells: int = 900,
+    *,
+    seed: int = 0,
+    patient: str = "P0",
+    malignant_fraction: float = 0.40,
+    cnv_amplitude: float = 0.80,
+    cnv_noise: float = 0.30,
+    max_altered_chroms: int = 4,
+) -> SyntheticCohort:
+    """Hard regime: malignant vs normal epithelial differ ONLY by subclonal CNV.
+
+    This cohort is built to make the central claim *measurable*: that an
+    expression-derived CNV signal sharpens the normal-vs-malignant call beyond
+    what a transcriptomic embedding alone can do.
+
+    The trick is **intratumor heterogeneity**. Each malignant cell independently
+    picks a small random subset of chromosomes to alter, each with a random sign
+    (gain or loss), at a small per-gene amplitude buried under per-gene noise.
+    Normal epithelial cells carry no alteration. Crucially:
+
+    - There is **no non-CNV marker program** separating malignant from normal
+      epithelial -- both share the identical epithelial baseline. So a classifier
+      cannot cheat via lineage markers.
+    - Because the alteration *sign* varies cell to cell, the malignant cells do
+      not share a single linear direction in expression space, so PCA / kNN
+      reference mapping cannot find a separating axis.
+    - But the **magnitude** of genome-coherent deviation -- exactly what the
+      chromosome-length-normalized CNV score measures -- is high for any altered
+      cell and ~0 for normal cells. So the CNV channel separates them.
+
+    The result is a setting where ablating the CNV feature measurably drops the
+    malignant-call F1, which is the demonstration v0.2 adds.
+    """
+    rng = np.random.default_rng(seed)
+    genes = _build_genes()
+    n_genes = len(genes)
+    chrom_of = genes["chrom"].to_numpy()
+    alterable = list(CHROM_SIZES.keys())
+
+    n_malignant = int(round(n_cells * malignant_fraction))
+    n_normal_epi = int(round(n_cells * 0.30))
+    n_stromal = n_cells - n_malignant - n_normal_epi
+
+    types: list[str] = []
+    types.extend(rng.choice(STROMAL_TYPES, size=n_stromal).tolist())
+    types.extend(["Epithelial_normal"] * n_normal_epi)
+    types.extend(["Epithelial_malignant"] * n_malignant)
+    types = np.array(types, dtype=object)
+    rng.shuffle(types)
+
+    expr = rng.normal(0.0, 0.35, size=(n_cells, n_genes)).astype(np.float64)
+
+    # stromal + epithelial lineage markers (epithelial markers shared by normal
+    # AND malignant -- they are the same lineage)
+    for ct in CELL_TYPES:
+        mask = types == ct
+        if not mask.any():
+            continue
+        idx = _gene_idx(genes, CELLTYPE_MARKERS[ct])
+        expr[np.ix_(mask, idx)] += 2.2
+
+    is_malignant = types == "Epithelial_malignant"
+    mal_idx = np.where(is_malignant)[0]
+
+    # subclonal CNV: each malignant cell alters a random subset of chromosomes
+    # with random sign, small amplitude, buried under per-gene noise.
+    for ci in mal_idx:
+        k = int(rng.integers(1, max_altered_chroms + 1))
+        chosen = rng.choice(alterable, size=k, replace=False)
+        for chrom in chosen:
+            sign = 1.0 if rng.random() < 0.5 else -1.0
+            cols = np.where(chrom_of == chrom)[0]
+            shift = sign * cnv_amplitude + rng.normal(0.0, cnv_noise, size=len(cols))
+            expr[ci, cols] += shift
+
+    # add baseline per-gene noise to normal epithelial too, so the only
+    # systematic difference is the genome-coherent malignant alteration
+    expr = np.clip(expr, 0.0, None)
+
+    obs = pd.DataFrame(
+        {
+            "cell_type": types,
+            "compartment": np.where(
+                np.isin(types, EPITHELIAL_TYPES), "epithelial", "stromal"
+            ),
+            "is_malignant": is_malignant,
+            "subtype": np.array([None] * n_cells, dtype=object),
+            "grade": np.array([None] * n_cells, dtype=object),
+            "patient": patient,
+        }
+    )
+    obs.index = [f"{patient}_cell{i:05d}" for i in range(n_cells)]
+
+    return SyntheticCohort(
+        expr=expr,
+        genes=genes,
+        obs=obs,
+        meta={
+            "seed": seed,
+            "patient": patient,
+            "regime": "hard-subclonal-cnv",
+            "n_malignant": int(is_malignant.sum()),
+        },
+    )
+
+
 def generate_multipatient(
     n_patients: int = 3,
     cells_per_patient: int = 700,

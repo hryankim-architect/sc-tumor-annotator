@@ -81,6 +81,30 @@ canary asserts a positive separation; the demo cohort shows ~0.23).
 These numbers describe *this synthetic dataset*. They are an illustration of the
 method working end-to-end, not a benchmark claim about real cohorts.
 
+## v0.2 — does the CNV channel actually carry the signal? (ablation)
+
+v0.1's separable cohort can't answer that, so v0.2 adds a **hard regime**
+(`synth.generate_malignancy_cohort`) where normal and malignant epithelial cells
+share an identical transcriptomic baseline and differ *only* by heterogeneous,
+sign-varying **subclonal CNV** — and a head-to-head ablation of the malignant
+call (macro-F1, 5-fold CV over epithelial cells, seed 0):
+
+| Feature set for the malignant call | macro-F1 |
+|---|---|
+| kNN reference-mapping (30-PC embedding) | 0.92 |
+| **CNV scalar only (1 feature)** | **0.943** |
+| Embedding (30 PCs) | 0.986 |
+| Embedding + CNV | 0.990 |
+
+Honest reading: a **single, biologically-grounded CNV scalar recovers the
+malignant call at 0.94 macro-F1** — within ~4 points of a 30-dimensional
+embedding — and adding it to the embedding is non-harmful and slightly additive
+(+0.0035). A gradient-boosted tree already recovers much of the CNV magnitude
+from the embedding nonlinearly, so the explicit CNV score's value is
+**interpretability and compactness**, not a large accuracy jump. The kNN
+baseline trails because the sign-heterogeneous alterations leave no single
+linear axis to map along. See [`docs/release-notes/v0.2.md`](docs/release-notes/v0.2.md).
+
 ---
 
 ## Quickstart
@@ -119,10 +143,12 @@ make canary
 │   ├── .gitignore
 │   └── manifest.yaml            # public datasets the method targets (not downloaded)
 ├── src/sctumor/
-│   ├── synth.py                 # deterministic synthetic cancer scRNA-seq
+│   ├── synth.py                 # deterministic synthetic cancer scRNA-seq (+ hard subclonal-CNV regime)
 │   ├── cnv.py                   # expression-based CNV inference + length-normalized score
 │   ├── annotate.py              # tree-based hierarchical annotator + kNN baseline
 │   ├── evaluate.py              # 5-fold CV + independent-cohort harness
+│   ├── ablation.py              # CNV-feature ablation on the malignant call
+│   ├── adapter.py               # optional real-data bridge (Scanpy/AnnData)
 │   ├── pipeline.py              # CLI entry; audit + MLflow shape
 │   ├── audit.py                 # hash-chained NDJSON ledger (substrate)
 │   ├── tracking.py              # MLflow wrapper (substrate)

@@ -35,12 +35,14 @@ so the demo stays reproducible in under a minute.
 
 ## Per-axis notes
 
-- **Malignant call.** On the synthetic data both the tree model and the baseline
-  reach F1 = 1.0, because the CNV imprint also perturbs expression enough for a
-  pure embedding to separate cells. The CNV-score feature is retained because on
-  real data, where normal and malignant epithelial cells share lineage markers,
-  it carries independent signal. Demonstrating that margin on real data is out
-  of scope for the synthetic demo.
+- **Malignant call.** On the *easy* multi-patient cohort both the tree and the
+  baseline saturate (F1 = 1.0), because the CNV imprint perturbs expression
+  enough for any embedding to separate cells. v0.2 adds the *hard* subclonal-CNV
+  regime (`generate_malignancy_cohort`) and an ablation to make the CNV
+  channel's contribution measurable. The honest result there — a single CNV
+  scalar reaching 0.94 vs a 30-PC embedding's 0.986, with a small additive
+  lift — is a synthetic-regime illustration, not a real-cohort benchmark.
+  Demonstrating the margin on real data is out of scope for the demo.
 - **Grade.** Driven by a subtle proliferation program; this is the axis where
   the trainable model's advantage over reference mapping is visible.
 
