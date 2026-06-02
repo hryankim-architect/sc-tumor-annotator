@@ -1,8 +1,8 @@
-# Roadmap — v0.3: one real public-data demo
+# Roadmap, v0.3: one real public-data demo
 
 **Status:** planned (not yet implemented). v0.1/v0.2 are synthetic-only by design;
 v0.3 closes the one conceptual gap a reviewer reliably finds — "does this run on
-real data?" — by exercising `sctumor.adapter.from_anndata` on a real public
+real data?", by exercising `sctumor.adapter.from_anndata` on a real public
 single-cell cohort.
 
 ## Goal
@@ -22,12 +22,12 @@ The demo needs a cohort that is (a) public and open-access, (b) small enough to
 cache on a laptop, and (c) annotated with `cell_type` and a malignant flag (ideal:
 subtype too). Candidates from `data/manifest.yaml`, ranked by fit:
 
-- **Wu et al. 2021 breast atlas** (DOI 10.1038/s41588-021-00911-1) — has
+- **Wu et al. 2021 breast atlas** (DOI 10.1038/s41588-021-00911-1), has
   curated cell types + malignant epithelial calls + subtype metadata. Best fit,
   but the full object is large; subset to 2–3 patients and a few thousand cells.
-- **Pal et al. 2021** (DOI 10.15252/embj.2020107333) — normal/preneoplastic/
+- **Pal et al. 2021** (DOI 10.15252/embj.2020107333), normal/preneoplastic/
   tumor states; good for the normal-vs-malignant axis.
-- **Peng PDAC 2019** (DOI 10.1038/s41422-019-0195-y) — tumor vs normal epithelial
+- **Peng PDAC 2019** (DOI 10.1038/s41422-019-0195-y), tumor vs normal epithelial
   by CNV; matches the CNV-score story but a different tissue.
 
 A reliable always-available fallback (`scanpy.datasets.pbmc3k`) exists but has
@@ -46,7 +46,7 @@ the tumor stages. Use it only as a CI-safe import check, not the headline demo.
    default, network-free path).
 7. Embed a real-data CNV heatmap next to the synthetic one in the README.
 
-## Honest-scope guardrails
+## Scope guardrails
 
 - The synthetic `make run` stays the default, deterministic, network-free demo.
   The real-data demo is opt-in (`make real-demo`) so CI and a fresh clone never
@@ -58,5 +58,5 @@ the tumor stages. Use it only as a CI-safe import check, not the headline demo.
 ## Effort
 
 ~half a day, dominated by dataset wrangling (annotation harmonization, gene→chrom
-mapping), not by the method — the method is unchanged from v0.2. This is why it
+mapping), not by the method, the method is unchanged from v0.2. This is why it
 is scoped as its own focused session rather than bundled into a quick-win pass.

@@ -12,7 +12,7 @@
 single-cell RNA-seq that (1) labels cell types, (2) calls malignant vs normal
 epithelial cells, optionally informed by an expression-derived
 **copy-number-variation (CNV) score**, and (3) predicts cancer **subtype**
-(ER+/HER2+/TNBC) and **grade** (1/2/3) within malignant cells — evaluated under
+(ER+/HER2+/TNBC) and **grade** (1/2/3) within malignant cells, evaluated under
 5-fold cross-validation and an independent-cohort hold-out, with the CNV score's
 contribution measured by an explicit ablation rather than assumed.
 
@@ -23,8 +23,8 @@ single Mac/Linux box. Everything is seeded.
 (no-op when no server is configured), and exposes a deterministic canary the
 lab monitoring layer probes daily.
 
-**Production framing**: methods in this *class* — automated tumor-cell
-annotation, expression-based CNV inference, and subtype/grade prediction — are
+**Production framing**: methods in this *class*, automated tumor-cell
+annotation, expression-based CNV inference, and subtype/grade prediction, are
 applied at full cohort scale on proprietary data in industry settings. This
 repository implements the **method and the engineering** from public building
 blocks only (Scanpy, InferCNV, CopyKat, scikit-learn), on synthetic data. It is
@@ -57,11 +57,11 @@ company's model, dataset, or parameters. See
 The CNV score is offered as one optional, interpretable feature for the
 normal-vs-malignant decision, alongside the transcriptomic embedding. Whether it
 improves the call over the embedding alone is treated as an empirical question,
-answered by the v0.2 ablation below — not asserted.
+answered by the v0.2 ablation below, not asserted.
 
 ![Inferred CNV track: malignant epithelial cells show genome-coherent gains and losses; normal cells do not](docs/figures/cnv_heatmap.png)
 
-*Inferred CNV track on the hard regime — epithelial cells sorted normal → malignant. The malignant block (lower rows) carries genome-coherent gains/losses; normal cells are flat noise.*
+*Inferred CNV track on the hard regime, epithelial cells sorted normal → malignant. The malignant block (lower rows) carries genome-coherent gains/losses; normal cells are flat noise.*
 
 ---
 
@@ -77,10 +77,10 @@ chromosomes). Macro-F1, tree-based model vs reference-mapping baseline:
 | Cancer subtype | 1.000 | 1.000 | 1.000 |
 | Cancer grade | **0.938** | **0.910** | 0.874 |
 
-Honest reading: the synthetic data is deliberately *separable*, so both methods
+Reading: the synthetic data is deliberately *separable*, so both methods
 recover cell type, the malignant call, and subtype near-perfectly. The
-trainable tree model's margin shows on the hardest axis — **cancer grade**,
-driven by a subtle proliferation program — where it beats the CNV-blind
+trainable tree model's margin shows on the hardest axis, **cancer grade**,
+driven by a subtle proliferation program, where it beats the CNV-blind
 reference-mapping baseline on both CV and the independent cohort. The CNV
 score's own discriminative power is verified separately: malignant cells carry
 a markedly higher chromosome-length-normalized score than normal cells (the
@@ -89,12 +89,12 @@ canary asserts a positive separation; the demo cohort shows ~0.23).
 These numbers describe *this synthetic dataset*. They are an illustration of the
 method working end-to-end, not a benchmark claim about real cohorts.
 
-## v0.2 — does the CNV channel actually carry the signal? (ablation)
+## v0.2, does the CNV channel actually carry the signal? (ablation)
 
 v0.1's separable cohort can't answer that, so v0.2 adds a **hard regime**
 (`synth.generate_malignancy_cohort`) where normal and malignant epithelial cells
 share an identical transcriptomic baseline and differ *only* by heterogeneous,
-sign-varying **subclonal CNV** — and a head-to-head ablation of the malignant
+sign-varying **subclonal CNV**, and a head-to-head ablation of the malignant
 call (macro-F1, 5-fold CV over epithelial cells, seed 0):
 
 | Feature set for the malignant call | macro-F1 |
@@ -104,9 +104,9 @@ call (macro-F1, 5-fold CV over epithelial cells, seed 0):
 | Embedding (30 PCs) | 0.986 |
 | Embedding + CNV | 0.990 |
 
-Honest reading: a **single, biologically-grounded CNV scalar recovers the
-malignant call at 0.94 macro-F1** — within ~4 points of a 30-dimensional
-embedding — and adding it to the embedding is non-harmful and slightly additive
+Reading: a **single, biologically-grounded CNV scalar recovers the
+malignant call at 0.94 macro-F1**, within ~4 points of a 30-dimensional
+embedding, and adding it to the embedding is non-harmful and slightly additive
 (+0.0035). A gradient-boosted tree already recovers much of the CNV magnitude
 from the embedding nonlinearly, so the explicit CNV score's value is
 **interpretability and compactness**, not a large accuracy jump. The kNN

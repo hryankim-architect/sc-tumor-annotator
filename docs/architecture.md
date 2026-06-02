@@ -41,7 +41,7 @@ genes. Ordering genes genomically and smoothing recovers a per-cell
 pseudo-copy-number track (the public idea behind InferCNV and CopyKat). The
 aggregate CNV score is offered to the normal-vs-malignant classifier as one
 interpretable feature. Whether it improves the call over the transcriptomic
-embedding alone is an empirical question the ablation answers — and the honest
+embedding alone is an empirical question the ablation answers, and the honest
 answer on the synthetic regime is modest: a single CNV scalar approaches a
 30-PC embedding (0.94 vs 0.99 macro-F1) and adding it to the embedding is only
 marginally additive. The score's value is interpretability and compactness, not
@@ -73,5 +73,5 @@ which is what the daily lab probe checks.
 
 No microservices, no async runtime, no DAG engine, no container per run, no
 deep-learning dependency. The trainable model is a gradient-boosted tree
-ensemble precisely because it is fast, deterministic, and CPU-only — the demo
+ensemble precisely because it is fast, deterministic, and CPU-only, the demo
 must run on a recruiter's laptop.
