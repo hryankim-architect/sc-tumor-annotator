@@ -32,6 +32,12 @@ so the demo stays reproducible in under a minute.
   production values are out of scope.
 - **Multimodal inputs.** CITE-seq, spatial, or genomics co-assay integration is
   out of scope for v0.1.
+- **Classifier-style probability calibration (ECE).** The malignant-call
+  annotator emits hard labels from a tree / kNN model, not calibrated class
+  probabilities, so the classifier-style ECE diagnostic used in `dmoi-brca-poc`
+  and `multiqc-foundation-gate` is not applicable without first exposing decision
+  scores — out of scope here. Interpretability is provided instead by the
+  CNV-feature ablation (the single interpretable CNV scalar vs the embedding).
 
 ## Per-axis notes
 
