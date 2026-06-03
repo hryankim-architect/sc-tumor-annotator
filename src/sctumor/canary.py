@@ -1,6 +1,6 @@
 """Deterministic canary smoke test.
 
-Probed daily by the Polish-Phase5 ``lab_semantic_check.py`` runner. Contract:
+Probed daily by the ``lab_semantic_check.py`` runner. Contract:
 
 1. Completes in well under 30 seconds on a single workstation.
 2. Deterministic given the fixed fixture.
