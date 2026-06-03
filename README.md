@@ -1,6 +1,6 @@
 # `sc-tumor-annotator`
 
-![ci](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/english-only.yml/badge.svg)
+![ci](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/ci.yml/badge.svg)
 
 > The training data is a small, deterministically-generated synthetic cancer
 > scRNA-seq cohort — no patient records, no proprietary code, no external
@@ -143,8 +143,7 @@ make canary
 ├── Makefile                     # install | data | run | test | report | lint | canary
 ├── pyproject.toml               # pinned deps; [singlecell] extra = scanpy/anndata
 ├── .github/workflows/
-│   ├── ci.yml                   # ruff + pytest + canary
-│   └── english-only.yml         # CJK scanner (public artifacts are English-only)
+│   └── ci.yml                   # ruff + pytest + canary
 ├── data/
 │   ├── .gitignore
 │   └── manifest.yaml            # public datasets the method targets (not downloaded)
