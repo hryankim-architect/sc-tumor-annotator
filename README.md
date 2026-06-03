@@ -143,7 +143,7 @@ make canary
 ├── Makefile                     # install | data | run | test | report | lint | canary
 ├── pyproject.toml               # pinned deps; [singlecell] extra = scanpy/anndata
 ├── .github/workflows/
-│   ├── ci.yml                   # ruff + pytest + scope-preamble lint + canary
+│   ├── ci.yml                   # ruff + pytest + canary
 │   └── english-only.yml         # CJK scanner (public artifacts are English-only)
 ├── data/
 │   ├── .gitignore

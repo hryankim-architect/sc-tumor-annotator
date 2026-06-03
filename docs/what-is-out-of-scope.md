@@ -53,5 +53,6 @@ scope narrow is what makes the demo self-contained and fast.
 
 ## How to add an item
 
-Open a PR that (1) adds the item here, (2) gives a one-sentence reason, and
-(3) links the proposing issue. The friction is intentional.
+File an issue first. Then open a PR that adds the item to this list, states the
+reason in one sentence, and references the issue. The extra step keeps the scope
+list deliberate rather than accidental.
