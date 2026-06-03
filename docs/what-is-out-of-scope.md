@@ -1,8 +1,7 @@
 # What is out of scope
 
-This file is the anti-scope-creep ledger. A capability-portrait repo's value is
-in being *small and complete*; this page records what is deliberately excluded
-so the demo stays reproducible in under a minute.
+This file records what is deliberately excluded from this repo. Keeping the
+scope narrow is what makes the demo self-contained and fast.
 
 ## Hard boundaries (these protect the scope framing)
 

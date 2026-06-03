@@ -64,7 +64,7 @@ parameterizations of it are out of scope here.
 | MLflow | `tracking` | `MLFLOW_TRACKING_URI` | no-op |
 | Canary | `canary` | `SCTUMOR_CANARY_FIXTURE` | uses the bundled fixture |
 
-The hash-chained ledger format is shared across the capability-portrait quartet
+The chained ledger format is shared across the four portfolio repos
 so the same verifier works against any of them. The canary asserts the method's
 central invariant (malignant CNV score > normal CNV score) in under a second,
 which is what the daily lab probe checks.

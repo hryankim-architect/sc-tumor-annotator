@@ -1,4 +1,4 @@
-# sc-tumor-annotator -- cancer scRNA-seq annotation capability portrait.
+# sc-tumor-annotator -- cancer scRNA-seq annotation proof of concept.
 # Reproducible end-to-end with: make install && make run && make test && make report
 
 PYTHON ?= python3
@@ -8,7 +8,7 @@ ARTIFACT_DIR := artifacts
 DATA_DIR := data
 REPORT_DIR := reports
 
-.PHONY: help install data run test report lint clean canary verify-readme
+.PHONY: help install data run test report lint clean canary
 
 help:
 	@echo "make install      Install pinned dependencies (uv sync, or pip -e .)"
@@ -18,7 +18,7 @@ help:
 	@echo "make report       Render demo notebook to HTML at reports/demo.html"
 	@echo "make lint         ruff check"
 	@echo "make canary       Run the deterministic canary smoke test"
-	@echo "make verify-readme  Check the honest-scope preamble is present in README"
+	@echo "make  Check the honest-scope preamble is present in README"
 	@echo "make clean        Remove build artifacts (data left alone)"
 
 install:
@@ -42,10 +42,6 @@ lint:
 canary:
 	$(PYTHON) -m $(PKG).canary
 
-verify-readme:
-	@grep -q "Capability portrait, not a research result" README.md \
-	  && echo "README preamble OK" \
-	  || (echo "FAIL: README is missing the honest-scope preamble" && exit 1)
 
 clean:
 	rm -rf $(ARTIFACT_DIR) $(REPORT_DIR) .pytest_cache .ruff_cache

@@ -52,7 +52,7 @@ the tumor stages. Use it only as a CI-safe import check, not the headline demo.
   The real-data demo is opt-in (`make real-demo`) so CI and a fresh clone never
   depend on a download.
 - Real-cohort numbers are reported as a single illustrative run, not a benchmark,
-  and the README keeps the "capability portrait, not a research result" framing.
+  and the README retains the synthetic-demo framing (not a real-cohort benchmark).
 - No controlled-access tiers; open-access subsets only.
 
 ## Effort

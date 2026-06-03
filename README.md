@@ -2,11 +2,11 @@
 
 ![ci](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/english-only.yml/badge.svg)
 
-> **Capability portrait, not a research result.** Public data is intentionally
-> replaced with a small, deterministically-generated synthetic cohort so the
-> demo is byte-reproducible on a single workstation in well under a minute. No
-> patient data, and no proprietary code or parameters, are present in this
-> repository.
+> The training data is a small, deterministically-generated synthetic cancer
+> scRNA-seq cohort — no patient records, no proprietary code, no external
+> parameters. Every run from a fresh clone is byte-identical.
+> This repo demonstrates the method and the engineering; it is not a
+> clinical study or a benchmark against real cohorts.
 
 **What this shows**: a tree-based, *trainable* hierarchical annotator for cancer
 single-cell RNA-seq that (1) labels cell types, (2) calls malignant vs normal
@@ -19,18 +19,14 @@ contribution measured by an explicit ablation rather than assumed.
 **Reproducibility**: `make run` produces the metrics artifact in < 1 minute on a
 single Mac/Linux box. Everything is seeded.
 
-**Substrate**: emits a hash-chained NDJSON audit ledger, tracks MLflow runs
-(no-op when no server is configured), and exposes a deterministic canary the
-lab monitoring layer probes daily.
+**Substrate**: each run appends stage-level records to a hash-chained NDJSON trail. MLflow logging is a no-op unless a server is configured, and a canary check runs against the demo path daily.
 
-**Production framing**: methods in this *class*, automated tumor-cell
-annotation, expression-based CNV inference, and subtype/grade prediction, are
-applied at full cohort scale on proprietary data in industry settings. This
-repository implements the **method and the engineering** from public building
-blocks only (Scanpy, InferCNV, CopyKat, scikit-learn), on synthetic data. It is
-a clean-room capability demonstration, not a reproduction of any specific
-company's model, dataset, or parameters. See
-[`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
+**In practice**: automated tumor-cell annotation, expression-based CNV inference,
+and subtype/grade prediction are used at full cohort scale in industry. This
+repo implements those methods from public building blocks only (Scanpy,
+InferCNV, CopyKat, scikit-learn), on synthetic data. It is a clean-room
+implementation, not a reproduction of any specific company's model, dataset, or
+parameters. See [`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
 
 ---
 

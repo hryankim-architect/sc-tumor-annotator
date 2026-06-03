@@ -1,4 +1,4 @@
-"""sctumor: capability-portrait POC for cancer scRNA-seq annotation.
+"""sctumor: proof-of-concept for cancer scRNA-seq annotation.
 
 A clean-room demonstration of a *class* of capability: tree-based hierarchical
 cell-type annotation for tumor single-cell RNA-seq, copy-number-variation (CNV)
