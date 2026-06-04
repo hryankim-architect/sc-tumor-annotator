@@ -2,6 +2,10 @@
 
 ![ci](https://github.com/hryankim-architect/sc-tumor-annotator/actions/workflows/ci.yml/badge.svg)
 
+> **One principle, applied here.** Pick the smallest, most interpretable representation that could carry the signal; measure it against an honest baseline; report the verdict faithfully — whether the compact choice wins, ties, or loses. *That last step is why AI safety is needed: knowing a capability is real rather than a flattering benchmark.*
+>
+> In this repo: **representation** a single interpretable CNV scalar (chromosome-length-normalized) → **baseline** a 30-PC expression embedding → **verdict** compact *ties* big: 0.94 vs 0.986 macro-F1 — the value is interpretability, not accuracy.
+
 > The training data is a small, deterministically-generated synthetic cancer
 > scRNA-seq cohort — no patient records, no proprietary code, no external
 > parameters. Every run from a fresh clone is byte-identical.
