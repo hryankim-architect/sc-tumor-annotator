@@ -113,7 +113,7 @@ from the embedding nonlinearly, so the explicit CNV score's value is
 baseline trails because the sign-heterogeneous alterations leave no single
 linear axis to map along. See [`docs/release-notes/v0.2.md`](docs/release-notes/v0.2.md).
 
-![CNV-feature ablation: kNN 0.921, CNV scalar only 0.943, 30-PC embedding 0.986, embedding+CNV 0.990](docs/figures/cnv_ablation.png)
+![CNV-feature ablation: kNN 0.92, CNV scalar only 0.943, 30-PC embedding 0.986, embedding+CNV 0.990](docs/figures/cnv_ablation.png)
 
 ---
 
@@ -162,11 +162,15 @@ make canary
 │   ├── audit.py                 # hash-chained NDJSON ledger (substrate)
 │   ├── tracking.py              # MLflow wrapper (substrate)
 │   └── canary.py                # deterministic smoke test (substrate)
+├── notebooks/demo.ipynb         # CNV score density, heatmap, and ablation bar chart
 ├── tests/                       # synth / cnv / annotate / pipeline / canary
 └── docs/
     ├── architecture.md
     ├── what-is-out-of-scope.md
-    └── release-notes/v0.1.md
+    ├── roadmap-v0.3.md
+    └── release-notes/
+        ├── v0.1.md
+        └── v0.2.md
 ```
 
 ---
