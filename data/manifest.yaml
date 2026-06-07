@@ -8,6 +8,11 @@
 # real single-cell cohorts. All entries are open-access primary publications;
 # none are required to reproduce the demo.
 #
+# `make data` (`pipeline fetch`) is a deliberate no-op here: the catalog below is
+# `datasets:` (descriptive provenance by DOI), not fetchable `inputs:` with URLs +
+# sha256, because the demo is synthetic. Fetch + checksum wiring lives in the
+# genomics repos (e.g. tp53-aml-hrd-severity, hnscc-time-multimodal).
+#
 # Schema:
 #   datasets:
 #     - name:     short id
