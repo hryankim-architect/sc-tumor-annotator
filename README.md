@@ -8,7 +8,8 @@
 
 > The training data is a small, deterministically-generated synthetic cancer
 > scRNA-seq cohort — no patient records, no proprietary code, no external
-> parameters. Every run from a fresh clone is byte-identical.
+> parameters. The data is byte-identical across runs; the reported macro-F1s
+> reproduce to within sklearn-version rounding (last-decimal).
 > This repo demonstrates the method and the engineering; it is not a
 > clinical study or a benchmark against real cohorts.
 
