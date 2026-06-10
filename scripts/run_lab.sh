@@ -7,8 +7,8 @@
 
 set -euo pipefail
 
-export AUDIT_HOST="${AUDIT_HOST:-chi-mac-m:8081}"
-export MLFLOW_TRACKING_URI="${MLFLOW_TRACKING_URI:-http://chi-mac-m:5050}"
+export AUDIT_HOST="${AUDIT_HOST:-localhost:8081}"
+export MLFLOW_TRACKING_URI="${MLFLOW_TRACKING_URI:-http://localhost:5050}"
 export SCTUMOR_RUN_NAME="${SCTUMOR_RUN_NAME:-lab-$(date -u +%Y%m%d-%H%M%S)}"
 
 if ! command -v uv >/dev/null 2>&1; then
